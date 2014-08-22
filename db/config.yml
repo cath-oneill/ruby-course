@@ -1,6 +1,7 @@
 development:
   adapter: postgresql
-  database: honkr
+  database: honkr ##could have two different names, and refer to them
+  #in the if statement in environments.rb
   pool: 5
   timeout: 5000
 
