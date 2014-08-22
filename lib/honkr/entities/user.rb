@@ -9,6 +9,10 @@ module Honkr
       @password_digest = password_digest
     end
 
+    def set_id(new_id)
+      @id = new_id
+    end
+    
     def update_password(password)
       # TODO: Hash incoming password and save as password digest
     end

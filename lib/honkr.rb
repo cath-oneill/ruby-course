@@ -1,3 +1,5 @@
+require 'active_record'
+
 module Honkr
   def self.db
     @__db_instance
