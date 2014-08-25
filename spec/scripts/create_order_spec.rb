@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe DoubleDog::CreateOrder do
   let(:script) {DoubleDog::CreateOrder}
-  
+  let(:user) {DoubleDog::User.new(1, 'bob', 'pass1')}
+
   describe 'validation' do
     it "requires an employee to be logged in" do
       result = script.run(session_id: nil)
@@ -12,7 +13,6 @@ describe DoubleDog::CreateOrder do
     end
 
     it "requires items" do
-      user = DoubleDog::User.new(1, 'bob', 'pass1')
       expect(DoubleDog.db).to receive(:get_user_by_session_id).and_return(user)
 
       result = script.run(session_id: 'stubbed', items: nil)
@@ -22,7 +22,6 @@ describe DoubleDog::CreateOrder do
     end
 
     it "requires at least one item" do
-      user = DoubleDog::User.new(1, 'bob', 'pass1')
       expect(DoubleDog.db).to receive(:get_user_by_session_id).and_return(user)
 
       result = script.run(session_id: 'stubbed', items: [])
@@ -35,7 +34,6 @@ describe DoubleDog::CreateOrder do
 
   it "creates an order" do
     item_1 = DoubleDog.db.create_item(name: 'hot dog', price: 5)
-    user = DoubleDog::User.new(1, 'bob', 'pass1')
     expect(DoubleDog.db).to receive(:get_user_by_session_id).and_return(user)
 
     result = script.run(session_id: 'stubbed', items: [item_1])
