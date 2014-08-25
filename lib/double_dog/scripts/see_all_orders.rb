@@ -1,9 +1,9 @@
 module DoubleDog
   class SeeAllOrders
-    include Failure_Success
-    include Admin_Session
+    extend Failure_Success
+    extend Admin_Session
     
-    def run(params)
+    def self.run(params)
       return failure(:not_admin) unless admin_session?(params[:admin_session])
 
       orders = DoubleDog.db.all_orders
