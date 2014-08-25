@@ -1,8 +1,6 @@
 require 'spec_helper'
-require 'helpers.rb'
 
 describe DoubleDog::SeeAllOrders do
-  include Helpers
   let(:script) {DoubleDog::SeeAllOrders}
 
   describe "Validation" do
