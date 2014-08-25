@@ -1,6 +1,7 @@
 module DoubleDog
   class SeeAllOrders
     include Failure_Success
+    include Admin_Session
     
     def run(params)
       return failure(:not_admin) unless admin_session?(params[:admin_session])
@@ -9,10 +10,6 @@ module DoubleDog
       return success(orders: orders)
     end
 
-    def admin_session?(session_id)
-      user = DoubleDog.db.get_user_by_session_id(session_id)
-      user && user.admin?
-    end
 
   end
 end

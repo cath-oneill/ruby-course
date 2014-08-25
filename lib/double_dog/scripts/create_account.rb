@@ -1,6 +1,7 @@
 module DoubleDog
   class CreateAccount
     include Failure_Success
+    include Admin_Session
     
     def run(params)
       return failure(:not_admin) unless admin_session?(params[:session_id])
@@ -9,11 +10,6 @@ module DoubleDog
 
       user = DoubleDog.db.create_user(:username => params[:username], :password => params[:password])
       return success(:user => user)
-    end
-
-    def admin_session?(session_id)
-      user = DoubleDog.db.get_user_by_session_id(session_id)
-      user && user.admin?
     end
 
     def valid_username?(username)
