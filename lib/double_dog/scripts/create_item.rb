@@ -1,6 +1,7 @@
 module DoubleDog
   class CreateItem
-
+    include Failure_Success
+    
     def run(params)
       return failure(:not_admin) unless admin_session?(params[:session_id])
       return failure(:invalid_name) unless valid_name?(params[:name])
@@ -23,14 +24,5 @@ module DoubleDog
       price != nil && price >= 0.50
     end
 
-  private
-
-    def failure(error_name)
-      return :success? => false, :error => error_name
-    end
-
-    def success(data)
-      return data.merge(:success? => true)
-    end
   end
 end
