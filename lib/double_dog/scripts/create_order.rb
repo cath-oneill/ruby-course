@@ -1,8 +1,8 @@
 module DoubleDog
   class CreateOrder
-    include Failure_Success
+    extend Failure_Success
     
-    def run(params)
+    def self.run(params)
       user = DoubleDog.db.get_user_by_session_id(params[:session_id])
       return failure(:invalid_session) if user.nil?
       return failure(:no_items_ordered) unless valid_items?(params[:items])
@@ -11,7 +11,7 @@ module DoubleDog
       return success(order: order)
     end
 
-    def valid_items?(items)
+    def self.valid_items?(items)
       items != nil && items.count >= 1
     end
   end

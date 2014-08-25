@@ -17,7 +17,7 @@ describe 'Creating an Order' do
     item3 = DoubleDog.db.create_item(:name => 'Juice', :price => 7)
 
     # When I create an order
-    create_result = DoubleDog::CreateOrder.new.run(
+    create_result = DoubleDog::CreateOrder.run(
       :session_id => session_id,
       :items => [item1, item2, item3]
     )
