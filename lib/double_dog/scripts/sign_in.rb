@@ -1,8 +1,8 @@
 module DoubleDog
   class SignIn
-    include Failure_Success
+    extend Failure_Success
 
-    def run(params)
+    def self.run(params)
       return failure(:nil_username) if params[:username].nil?
       return failure(:blank_username) if params[:username] == ''
       return failure(:nil_password) if params[:password].nil?

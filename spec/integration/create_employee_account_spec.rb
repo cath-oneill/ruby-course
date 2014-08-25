@@ -7,7 +7,7 @@ describe 'Creating an Employee Account' do
     admin = DoubleDog.db.create_user(:username => 'alice', :password => '123', :admin => true)
 
     # And I am signed in
-    signin_result = DoubleDog::SignIn.new.run(:username => 'alice', :password => '123')
+    signin_result = DoubleDog::SignIn.run(:username => 'alice', :password => '123')
     expect(signin_result[:success?]).to eq true
     session_id = signin_result[:session_id]
 

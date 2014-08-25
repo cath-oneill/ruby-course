@@ -1,5 +1,6 @@
 module Failure_Success
-    private
+  private
+
     def failure(error_name)
       return :success? => false, :error => error_name
     end

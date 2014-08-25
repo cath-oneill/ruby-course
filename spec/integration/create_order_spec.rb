@@ -7,7 +7,7 @@ describe 'Creating an Order' do
     admin = DoubleDog.db.create_user(:username => 'bob', :password => 'xyz')
 
     # And I am signed in
-    signin_result = DoubleDog::SignIn.new.run(:username => 'bob', :password => 'xyz')
+    signin_result = DoubleDog::SignIn.run(:username => 'bob', :password => 'xyz')
     expect(signin_result[:success?]).to eq true
     session_id = signin_result[:session_id]
 
