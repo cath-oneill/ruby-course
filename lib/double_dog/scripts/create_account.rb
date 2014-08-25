@@ -1,9 +1,9 @@
 module DoubleDog
   class CreateAccount
-    include Failure_Success
-    include Admin_Session
+    extend Failure_Success
+    extend Admin_Session
     
-    def run(params)
+    def self.run(params)
       return failure(:not_admin) unless admin_session?(params[:session_id])
       return failure(:invalid_username) unless valid_username?(params[:username])
       return failure(:invalid_password) unless valid_password?(params[:password])
@@ -12,11 +12,11 @@ module DoubleDog
       return success(:user => user)
     end
 
-    def valid_username?(username)
+    def self.valid_username?(username)
       username != nil && username.length >= 3
     end
 
-    def valid_password?(password)
+    def self.valid_password?(password)
       password != nil && password.length >= 3
     end
   end

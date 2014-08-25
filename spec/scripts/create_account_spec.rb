@@ -4,7 +4,7 @@ describe DoubleDog::CreateAccount do
 
   describe 'Validation' do
     it "requires the creator to be an admin" do
-      script = DoubleDog::CreateAccount.new
+      script = DoubleDog::CreateAccount
       expect(script).to receive(:admin_session?).and_return(false)
 
       result = script.run(:session_id => 'nope', :username => 'a', :password => 'b')
@@ -13,7 +13,7 @@ describe DoubleDog::CreateAccount do
     end
 
     it "requires a username" do
-      script = DoubleDog::CreateAccount.new
+      script = DoubleDog::CreateAccount
       expect(script).to receive(:admin_session?).and_return(true)
 
       result = script.run(:session_id => 0, :password => 'bluh')
@@ -22,7 +22,7 @@ describe DoubleDog::CreateAccount do
     end
 
     it "requires a username to be at least three characters" do
-      script = DoubleDog::CreateAccount.new
+      script = DoubleDog::CreateAccount
       expect(script).to receive(:admin_session?).and_return(true)
 
       result = script.run(:session_id => 0, :username => 'ab', :password => 'bluh')
@@ -31,7 +31,7 @@ describe DoubleDog::CreateAccount do
     end
 
     it "requires a password" do
-      script = DoubleDog::CreateAccount.new
+      script = DoubleDog::CreateAccount
       expect(script).to receive(:admin_session?).and_return(true)
 
       result = script.run(:session_id => 0, :username => 'bob')
@@ -40,7 +40,7 @@ describe DoubleDog::CreateAccount do
     end
 
     it "requires a password with at least three characters" do
-      script = DoubleDog::CreateAccount.new
+      script = DoubleDog::CreateAccount
       expect(script).to receive(:admin_session?).and_return(true)
 
       result = script.run(:session_id => 0, :username => 'bob', :password => '12')
@@ -50,7 +50,7 @@ describe DoubleDog::CreateAccount do
   end
 
   it "creates an account" do
-    script = DoubleDog::CreateAccount.new
+    script = DoubleDog::CreateAccount
     expect(script).to receive(:admin_session?).and_return(true)
 
     result = script.run(:session_id => 0, :username => 'bob', :password => 'letmein')

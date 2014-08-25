@@ -12,7 +12,7 @@ describe 'Creating an Employee Account' do
     session_id = signin_result[:session_id]
 
     # When I create an employee account for Bob
-    create_result = DoubleDog::CreateAccount.new.run(
+    create_result = DoubleDog::CreateAccount.run(
       :session_id => session_id,
       :username => 'bob',
       :password => 'xyz'
