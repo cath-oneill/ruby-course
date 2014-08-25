@@ -4,7 +4,7 @@ describe DoubleDog::CreateItem do
 
   describe 'Validation' do
     it "requires the user to be an admin" do
-      script = DoubleDog::CreateItem.new
+      script = DoubleDog::CreateItem
       expect(script).to receive(:admin_session?).and_return(false)
 
       result = script.run(:name => "doesn't matter", :price => 5)
@@ -13,7 +13,7 @@ describe DoubleDog::CreateItem do
     end
 
     it "requires a name" do
-      script = DoubleDog::CreateItem.new
+      script = DoubleDog::CreateItem
       expect(script).to receive(:admin_session?).and_return(true)
 
       result = script.run(:name => nil, :price => 5)
@@ -22,7 +22,7 @@ describe DoubleDog::CreateItem do
     end
 
     it "requires the name to be at least one character" do
-      script = DoubleDog::CreateItem.new
+      script = DoubleDog::CreateItem
       expect(script).to receive(:admin_session?).and_return(true)
 
       result = script.run(:name => '', :price => 5)
@@ -31,7 +31,7 @@ describe DoubleDog::CreateItem do
     end
 
     it "requires a price" do
-      script = DoubleDog::CreateItem.new
+      script = DoubleDog::CreateItem
       expect(script).to receive(:admin_session?).and_return(true)
 
       result = script.run(:name => 'x', :price => nil)
@@ -40,7 +40,7 @@ describe DoubleDog::CreateItem do
     end
 
     it "requires a price to be more than fiftey cents" do
-      script = DoubleDog::CreateItem.new
+      script = DoubleDog::CreateItem
       expect(script).to receive(:admin_session?).and_return(true)
 
       result = script.run(:name => 'y', :price => 0.4)
@@ -50,7 +50,7 @@ describe DoubleDog::CreateItem do
   end
 
   it "creates an item" do
-    script = DoubleDog::CreateItem.new
+    script = DoubleDog::CreateItem
     expect(script).to receive(:admin_session?).and_return(true)
 
     result = script.run(:name => 'smoothie', :price => 10)
