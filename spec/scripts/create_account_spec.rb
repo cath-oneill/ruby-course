@@ -1,15 +1,19 @@
 require 'spec_helper'
 
 describe DoubleDog::CreateAccount do
+  let(:script) {DoubleDog::CreateAccount}
+  let(:successful_login) do 
+    expect(script).to receive(:admin_session?).and_return(true)
+  end
+  let(:unsuccessful_login) do
+    expect(script).to receive(:admin_session?).and_return(false)
+  end
 
   describe 'Validation' do
     it "requires the creator to be an admin" do
-      script = DoubleDog::CreateAccount
-      expect(script).to receive(:admin_session?).and_return(false)
-
-      result = script.run(:session_id => 'nope', :username => 'a', :password => 'b')
-      expect(result[:success?]).to eq false
-      expect(result[:error]).to eq :not_admin
+      unsuccessful_login = script.run(:session_id => 'nope', :username => 'a', :password => 'b')
+      expect(unsuccessful_login[:success?]).to eq false
+      expect(unsuccessful_login[:error]).to eq :not_admin
     end
 
     it "requires a username" do
