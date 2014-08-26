@@ -9,8 +9,9 @@ require 'helpers.rb'
 RSpec.configure do |config|
 
   # Reset database singleton before every test
-  config.before do
+  config.before(:each) do
     DoubleDog.instance_variable_set(:@__db_instance, nil)
+    allow_message_expectations_on_nil
   end
 
 

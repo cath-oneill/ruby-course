@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 shared_examples "a database" do
-  let(:db) { described_class.new }
 
   it "creates a user" do
     user = db.create_user(:username => 'alice', :password => 'pass1')
@@ -124,10 +123,13 @@ shared_examples "a database" do
   end
 end
 
-describe DoubleDog::Database::InMemory do
-  it_behaves_like "a database"
-end
 
 describe DoubleDog::Database::SQL do
+  let(:db) { described_class.new }
   it_behaves_like 'a database'
+end
+
+describe DoubleDog::Database::InMemory do
+  let(:db) { described_class.new }
+  it_behaves_like "a database"
 end

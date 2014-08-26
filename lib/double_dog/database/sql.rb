@@ -23,7 +23,7 @@ module DoubleDog
         ar_user.password = attrs[:password]
         ar_user.admin = attrs[:admin]
         ar_user.save
-        User.new(ar_user.id, ar_user.username, ar_user.password, ar_user.admin)
+        DoubleDog::User.new(ar_user.id, ar_user.username, ar_user.password, ar_user.admin)
       end
 
       def get_user(id)
@@ -45,16 +45,17 @@ module DoubleDog
       end
 
       def get_user_by_username(username)
-        # user_attrs = @users.values.find { |attrs| attrs[:username] == username }
-        # return nil if user_attrs.nil?
-        # User.new(user_attrs[:id], user_attrs[:username], user_attrs[:password], user_attrs[:admin])
+        ar_user = User.find_by username: username
+        return nil if ar_user.nil?
+        DoubleDog::User.new(ar_user.id, ar_user.username, ar_user.password, ar_user.admin)
       end
 
       def create_item(attrs)
-        # new_id = (@item_id_counter += 1)
-        # @items[new_id] = attrs
-        # attrs[:id] = new_id
-        # Item.new(attrs[:id], attrs[:name], attrs[:price])
+        ar_item = Item.new
+        ar_item.name = attrs[:name]
+        ar_item.price = attrs[:price]
+        ar_item.save
+        DoubleDog::Item.new(ar_item.id, ar_item.name, ar_item.price)
       end
 
       def get_item(id)

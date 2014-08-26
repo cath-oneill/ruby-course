@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe DoubleDog::SignIn do
   let(:script) {DoubleDog::SignIn}
-  
+
   describe 'validation' do
     it "requires a non-nil username" do
       result = script.run(username: nil)
