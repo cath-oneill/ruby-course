@@ -2,7 +2,7 @@ require 'pry-byebug'
 
 module DoubleDog
   def self.db
-    @__db_instance #||= Database::InMemory.new
+    @__db_instance ||= Database::InMemory.new
   end
 
   def self.db=(database)
