@@ -1,11 +1,16 @@
 require 'spec_helper'
 
 shared_examples "a database" do
+  let(:db) { described_class.new }
+  let(:item) {db.create_item(:name => 'hot dog', :price => 5)}
+  let(:item_1) {db.create_item(:name => 'fries', :price => 3)}
+  let(:item_2) {db.create_item(:name => 'pickle', :price => 4)}
+  let(:item_3) { db.create_item(:name => 'potato', :price => 8)}
 
   it "creates a user" do
-    user = db.create_user(:username => 'alice', :password => 'pass1')
+    user = db.create_user(:username => 'alicia', :password => 'pass1')
     expect(user.id).to_not be_nil
-    expect(user.username).to eq 'alice'
+    expect(user.username).to eq 'alicia'
     expect(user.has_password? 'pass1').to eq true
     expect(user.admin?).to eq false
   end
@@ -48,7 +53,6 @@ shared_examples "a database" do
   end
 
   it "creates an item" do
-    item = db.create_item(:name => 'hot dog', :price => 5)
     expect(item).to be_a DoubleDog::Item
 
     expect(item.id).to_not be_nil
@@ -57,8 +61,6 @@ shared_examples "a database" do
   end
 
   it "retrieves an item" do
-    item = db.create_item(:name => 'hot dog', :price => 5)
-
     retrieved_item = db.get_item(item.id)
     expect(retrieved_item).to be_a DoubleDog::Item
     expect(retrieved_item.name).to eq 'hot dog'
@@ -66,14 +68,7 @@ shared_examples "a database" do
   end
 
   it "grabs all items" do
-    old_items = db.all_items
-    db.create_item(:name => 'fries', :price => 3)
-    db.create_item(:name => 'pickle', :price => 4)
-    db.create_item(:name => 'potato', :price => 8)
-
     items = db.all_items
-    difference = items.count - old_items.count
-    expect(difference).to eq 3
     expect(items.first).to be_a DoubleDog::Item
 
     expect(items.map &:name).to include('fries', 'pickle', 'potato')
@@ -81,9 +76,6 @@ shared_examples "a database" do
   end
 
   it "creates an order" do
-    item_1 = db.create_item(:name => 'fries', :price => 3)
-    item_2 = db.create_item(:name => 'pickle', :price => 4)
-    item_3 = db.create_item(:name => 'potato', :price => 8)
     emp = db.create_user(:username => 'mitch', :password => 'pass1')
 
     order = db.create_order(:employee_id => emp.id, :items => [item_1, item_2, item_3])
@@ -94,9 +86,6 @@ shared_examples "a database" do
   end
 
   it "retrieves an order" do
-    item_1 = db.create_item(:name => 'fries', :price => 3)
-    item_2 = db.create_item(:name => 'pickle', :price => 4)
-    item_3 = db.create_item(:name => 'potato', :price => 8)
     emp = db.create_user(:username => 'mitch', :password => 'pass1')
 
     order = db.create_order(:employee_id => emp.id, :items => [item_1, item_2, item_3])
@@ -107,9 +96,8 @@ shared_examples "a database" do
   end
 
   it "grabs all orders" do
-    item_1 = db.create_item(:name => 'fries', :price => 3)
-    item_2 = db.create_item(:name => 'pickle', :price => 4)
-    item_3 = db.create_item(:name => 'potato', :price => 8)
+    old_orders = db.all_orders
+
     emp_1 = db.create_user(:username => 'mitch', :password => 'pass1')
     emp_2 = db.create_user(:username => 'mell', :password => 'pass2')
     emp_3 = db.create_user(:username => 'donald', :password => 'pass3')
@@ -119,19 +107,18 @@ shared_examples "a database" do
     order_3 = db.create_order(:employee_id => emp_3.id, :items => [item_2, item_3])
 
     orders = db.all_orders
-    expect(orders.count).to eq(3)
+    difference = orders.count - old_orders.count
+    expect(difference).to eq(3)
     expect(orders.map &:employee_id).to include(emp_1.id, emp_2.id, emp_3.id)
-    expect(orders.first.items.count).to be >= 2
+    expect(orders.last.items.count).to be >= 2
   end
 end
 
 
 describe DoubleDog::Database::SQL do
-  let(:db) { described_class.new }
   it_behaves_like 'a database'
 end
 
 describe DoubleDog::Database::InMemory do
-  let(:db) { described_class.new }
   it_behaves_like "a database"
 end

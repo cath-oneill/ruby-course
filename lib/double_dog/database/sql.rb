@@ -5,25 +5,37 @@ module DoubleDog
     class SQL
 
       class Item < ActiveRecord::Base
+        has_many :orders, through: :orderitems
+        validates_uniqueness_of :name
+      end
+
+      class Orderitem < ActiveRecord::Base
+        belongs_to :item
         belongs_to :order
       end
 
       class Order < ActiveRecord::Base
-        has_many :items
+        has_many :items, through: :orderitems
         belongs_to :user
       end
 
       class User < ActiveRecord::Base
         has_many :orders
+        validates_uniqueness_of :username
       end
 
       def create_user(attrs)
-        ar_user = User.new
-        ar_user.username = attrs[:username]
-        ar_user.password = attrs[:password]
-        ar_user.admin = attrs[:admin]
-        ar_user.save
-        DoubleDog::User.new(ar_user.id, ar_user.username, ar_user.password, ar_user.admin)
+        user = get_user_by_username(attrs[:username])
+        if user.nil?
+          ar_user = User.new
+          ar_user.username = attrs[:username]
+          ar_user.password = attrs[:password]
+          ar_user.admin = attrs[:admin]
+          ar_user.save
+          DoubleDog::User.new(ar_user.id, ar_user.username, ar_user.password, ar_user.admin)
+        else
+          return user
+        end
       end
 
       def get_user(id)
@@ -51,15 +63,26 @@ module DoubleDog
       end
 
       def create_item(attrs)
-        ar_item = Item.new
-        ar_item.name = attrs[:name]
-        ar_item.price = attrs[:price]
-        ar_item.save
+        item = get_item_by_name(attrs[:name])
+        if item.nil?
+          ar_item = Item.new
+          ar_item.name = attrs[:name]
+          ar_item.price = attrs[:price]
+          ar_item.save
+        else
+          ar_item = item
+        end
         DoubleDog::Item.new(ar_item.id, ar_item.name, ar_item.price)
       end
 
       def get_item(id)
         ar_item = Item.find(id)
+        DoubleDog::Item.new(ar_item.id, ar_item.name, ar_item.price)
+      end
+
+      def get_item_by_name(name)
+        ar_item = Item.find_by name: name
+        return nil if ar_item.nil?
         DoubleDog::Item.new(ar_item.id, ar_item.name, ar_item.price)
       end
 
@@ -75,19 +98,30 @@ module DoubleDog
         ar_order = Order.new
         ar_order.user_id = attrs[:employee_id]
         ar_order.save
-        ar_order_items = Item.where order_id: ar_order.id
-        DoubleDog::Order.new(ar_order.id, ar_order.user_id, ar_order_items)
+        items = []
+        attrs[:items].each do |x|
+          i = x.id
+          o = Orderitem.new
+          o.order_id = ar_order.id
+          o.item_id = i
+          o.save
+          items << o
+        end
+        DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)
       end
 
       def get_order(id)
-        # attrs = @orders[id]
-        # Order.new(attrs[:id], attrs[:employee_id], attrs[:items])
+        ar_order = Order.find(id)
+        ar_order_items = Item.where order_id: ar_order.id
+        DoubleDog::Order.new(ar_order.id, ar_order.user_id, ar_order_items)        
       end
 
       def all_orders
-        # @orders.values.map do |attrs|
-        #   Order.new(attrs[:id], attrs[:employee_id], attrs[:items])
-        # end
+        all_orders = []
+        Order.find_each do |x|
+          all_orders << get_order(x.id)
+        end
+        all_orders
       end
 
     end
