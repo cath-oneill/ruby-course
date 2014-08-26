@@ -66,12 +66,14 @@ shared_examples "a database" do
   end
 
   it "grabs all items" do
+    old_items = db.all_items
     db.create_item(:name => 'fries', :price => 3)
     db.create_item(:name => 'pickle', :price => 4)
     db.create_item(:name => 'potato', :price => 8)
 
     items = db.all_items
-    expect(items.count).to eq 3
+    difference = items.count - old_items.count
+    expect(difference).to eq 3
     expect(items.first).to be_a DoubleDog::Item
 
     expect(items.map &:name).to include('fries', 'pickle', 'potato')

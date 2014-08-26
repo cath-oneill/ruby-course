@@ -64,9 +64,11 @@ module DoubleDog
       end
 
       def all_items
-        # @items.values.map do |attrs|
-        #   Item.new(attrs[:id], attrs[:name], attrs[:price])
-        # end
+        all_items = []
+        Item.find_each do |x|
+          all_items << DoubleDog::Item.new(x.id, x.name, x.price)
+        end
+        all_items
       end
 
       def create_order(attrs)
