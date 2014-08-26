@@ -70,10 +70,11 @@ module DoubleDog
       end
 
       def create_order(attrs)
-        # new_id = (@order_id_counter += 1)
-        # @orders[new_id] = attrs
-        # attrs[:id] = new_id
-        # Order.new(attrs[:id], attrs[:employee_id], attrs[:items])
+        ar_order = Order.new
+        ar_order.user_id = attrs[:employee_id]
+        ar_order.save
+        ar_order_items = Item.where order_id: ar_order.id
+        DoubleDog::Order.new(ar_order.id, ar_order.user_id, ar_order_items)
       end
 
       def get_order(id)
