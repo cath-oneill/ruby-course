@@ -18,16 +18,18 @@ module DoubleDog
       end
 
       def create_user(attrs)
-        # new_id = (@item_id_counter += 1)
-        # @users[new_id] = attrs
-        # attrs[:id] = new_id
-        # User.new(attrs[:id], attrs[:username], attrs[:password], attrs[:admin])
+        ar_user = User.new
+        ar_user.username = attrs[:username]
+        ar_user.password = attrs[:password]
+        ar_user.admin = attrs[:admin]
+        ar_user.save
+        User.new(ar_user.id, ar_user.username, ar_user.password, ar_user.admin)
       end
 
       def get_user(id)
-        # attrs = @users[id]
-        # User.new(attrs[:id], attrs[:username], attrs[:password], attrs[:admin])
-      end
+        ar_user = User.find(id)
+        DoubleDog::User.new(ar_user.id, ar_user.username, ar_user.password, ar_user.admin)
+     end
 
       def create_session(attrs)
         # new_id = (@sessions_id_counter += 1)
