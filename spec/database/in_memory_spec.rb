@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DoubleDog::Database::InMemory do
+shared_examples "a database" do
   let(:db) { described_class.new }
 
   it "creates a user" do
@@ -122,4 +122,12 @@ describe DoubleDog::Database::InMemory do
     expect(orders.map &:employee_id).to include(emp_1.id, emp_2.id, emp_3.id)
     expect(orders.first.items.count).to be >= 2
   end
+end
+
+describe DoubleDog::Database::InMemory do
+  it_behaves_like "a database"
+end
+
+describe DoubleDog::Database::SQL do
+  it_behaves_like 'a database'
 end

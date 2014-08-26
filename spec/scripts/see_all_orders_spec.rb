@@ -5,7 +5,7 @@ describe DoubleDog::SeeAllOrders do
 
   describe "Validation" do
     it "requires the user to be an admin" do
-      admin(script, false)
+      expect_admin(script, false)
       result = script.run(admin_session: 'stubbed')
       expect(result[:success?]).to eq(false)
       expect(result[:error]).to eq(:not_admin)
@@ -18,7 +18,7 @@ describe DoubleDog::SeeAllOrders do
     order_1 = DoubleDog.db.create_order(session_id: 'stubbed', items: [item_1, item_2])
     order_2 = DoubleDog.db.create_order(session_id: 'stubbed', items: [item_2])
     
-    admin(script, true)
+    expect_admin(script, true)
     result = script.run(admin_session: 'stubbed')
     expect(result[:success?]).to eq(true)
 

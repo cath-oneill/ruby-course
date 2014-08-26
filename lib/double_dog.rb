@@ -11,6 +11,7 @@ require_relative 'double_dog/entities/user.rb'
 require_relative 'double_dog/entities/order.rb'
 
 require_relative 'double_dog/database/in_memory.rb'
+require_relative 'double_dog/database/sql.rb'
 
 require_relative 'double_dog/scripts/failure_success_mixin.rb'
 require_relative 'double_dog/scripts/admin_session_mixin.rb'
