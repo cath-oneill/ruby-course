@@ -59,8 +59,8 @@ module DoubleDog
       end
 
       def get_item(id)
-        # attrs = @items[id]
-        # Item.new(attrs[:id], attrs[:name], attrs[:price])
+        ar_item = Item.find(id)
+        DoubleDog::Item.new(ar_item.id, ar_item.name, ar_item.price)
       end
 
       def all_items
