@@ -7,6 +7,10 @@ shared_examples "a database" do
     @item_2 = db.create_item(:name => 'pickle', :price => 4)
     @item_3 = db.create_item(:name => 'potato', :price => 8)
   end
+
+  before do
+    db.clear_everything
+  end
   
   let(:db) { described_class.new }
   
