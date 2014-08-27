@@ -29,14 +29,13 @@ module DoubleDog
       def create_user(attrs)
         user = get_user_by_username(attrs[:username])
         if user.nil?
-          ar_user = User.new
-          ar_user.username = attrs[:username]
-          ar_user.password = attrs[:password]
-          ar_user.admin = attrs[:admin]
-          ar_user.save
+          ar_user = User.create(
+                              username: attrs[:username],
+                              password: attrs[:password],
+                              admin: attrs[:admin])
           DoubleDog::User.new(ar_user.id, ar_user.username, ar_user.password, ar_user.admin)
         else
-          return user
+          user
         end
       end
 
@@ -67,10 +66,9 @@ module DoubleDog
       def create_item(attrs)
         item = get_item_by_name(attrs[:name])
         if item.nil?
-          ar_item = Item.new
-          ar_item.name = attrs[:name]
-          ar_item.price = attrs[:price]
-          ar_item.save
+          ar_item = Item.create(
+                  name: attrs[:name],
+                  price: attrs[:price])
         else
           ar_item = item
         end
@@ -97,20 +95,19 @@ module DoubleDog
       end
 
       def create_order(attrs)
-        ar_order = Order.new
-        ar_order.user_id = attrs[:employee_id]
-        ar_order.save
-        items = []
-        attrs[:items].each do |x|
-          i = x.id
-          o = Orderitem.new
-          o.order_id = ar_order.id
-          o.item_id = i
-          o.save
-          q = DoubleDog::Item.new(i, x.name, x.price)
-          items << q
+        ar_order = Order.create(user_id: attrs[:employee_id])
+        # ar_order.user_id = attrs[:employee_id]
+        # ar_order.save
+        # items = []
+        items = attrs[:items].map do |i|
+          Orderitem.create(order_id: ar_order.id,
+                          item_id: i.id)
+          q = DoubleDog::Item.new(i.id, i.name, i.price)
+          # items << q
         end
-        DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)
+        r = DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)
+        p r 
+        r 
       end
 
       def get_order(id)
