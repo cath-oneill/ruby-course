@@ -2,11 +2,16 @@ require 'spec_helper'
 
 shared_examples "a database" do
   let(:db) { described_class.new }
-  let(:item) {db.create_item(:name => 'hot dog', :price => 5)}
-  let(:item_1) {db.create_item(:name => 'fries', :price => 3)}
-  let(:item_2) {db.create_item(:name => 'pickle', :price => 4)}
-  let(:item_3) { db.create_item(:name => 'potato', :price => 8)}
-
+  before :all do
+  # let(:item) {db.create_item(:name => 'hot dog', :price => 5)}
+  # let(:item_1) {db.create_item(:name => 'fries', :price => 3)}
+  # let(:item_2) {db.create_item(:name => 'pickle', :price => 4)}
+  # let(:item_3) { db.create_item(:name => 'potato', :price => 8)}
+    @item = db.create_item(:name => 'hot dog', :price => 5)
+    @item_1 = db.create_item(:name => 'fries', :price => 3)
+    @item_2 = db.create_item(:name => 'pickle', :price => 4)
+    @item_3 = db.create_item(:name => 'potato', :price => 8)
+  end
   it "creates a user" do
     user = db.create_user(:username => 'alicia', :password => 'pass1')
     expect(user.id).to_not be_nil
@@ -53,15 +58,14 @@ shared_examples "a database" do
   end
 
   it "creates an item" do
-    expect(item).to be_a DoubleDog::Item
-
-    expect(item.id).to_not be_nil
-    expect(item.name).to eq 'hot dog'
-    expect(item.price).to eq 5
+    expect(@item).to be_a DoubleDog::Item
+    expect(@item.id).to_not be_nil
+    expect(@item.name).to eq 'hot dog'
+    expect(@item.price).to eq 5
   end
 
   it "retrieves an item" do
-    retrieved_item = db.get_item(item.id)
+    retrieved_item = db.get_item(@item.id)
     expect(retrieved_item).to be_a DoubleDog::Item
     expect(retrieved_item.name).to eq 'hot dog'
     expect(retrieved_item.price).to eq 5
@@ -69,8 +73,8 @@ shared_examples "a database" do
 
   it "grabs all items" do
     items = db.all_items
-    expect(items.first).to be_a DoubleDog::Item
-
+    result = items.first
+    expect(result).to be_a(DoubleDog::Item)
     expect(items.map &:name).to include('fries', 'pickle', 'potato')
     expect(items.map &:price).to include(3, 4, 8)
   end
@@ -78,7 +82,7 @@ shared_examples "a database" do
   it "creates an order" do
     emp = db.create_user(:username => 'mitch', :password => 'pass1')
 
-    order = db.create_order(:employee_id => emp.id, :items => [item_1, item_2, item_3])
+    order = db.create_order(:employee_id => emp.id, :items => [@item_1, @item_2, @item_3])
     expect(order).to be_a DoubleDog::Order
 
     expect(order.id).to_not be_nil
@@ -88,27 +92,23 @@ shared_examples "a database" do
   it "retrieves an order" do
     emp = db.create_user(:username => 'mitch', :password => 'pass1')
 
-    order = db.create_order(:employee_id => emp.id, :items => [item_1, item_2, item_3])
+    order = db.create_order(:employee_id => emp.id, :items => [@item_1, @item_2, @item_3])
     retrieved_order = db.get_order(order.id)
     expect(retrieved_order).to be_a DoubleDog::Order
     expect(retrieved_order.employee_id).to eq(emp.id)
-    expect(retrieved_order.items).to include(item_1, item_2, item_3)
+    expect(retrieved_order.items).to include(@item_1, @item_2, @item_3)
   end
 
   it "grabs all orders" do
-    old_orders = db.all_orders
-
     emp_1 = db.create_user(:username => 'mitch', :password => 'pass1')
     emp_2 = db.create_user(:username => 'mell', :password => 'pass2')
     emp_3 = db.create_user(:username => 'donald', :password => 'pass3')
 
-    order_1 = db.create_order(:employee_id => emp_1.id, :items => [item_1, item_2, item_3])
-    order_2 = db.create_order(:employee_id => emp_2.id, :items => [item_1, item_3])
-    order_3 = db.create_order(:employee_id => emp_3.id, :items => [item_2, item_3])
+    order_1 = db.create_order(:employee_id => emp_1.id, :items => [@item_1, @item_2, @item_3])
+    order_2 = db.create_order(:employee_id => emp_2.id, :items => [@item_1, @item_3])
+    order_3 = db.create_order(:employee_id => emp_3.id, :items => [@item_2, @item_3])
 
     orders = db.all_orders
-    difference = orders.count - old_orders.count
-    expect(difference).to eq(3)
     expect(orders.map &:employee_id).to include(emp_1.id, emp_2.id, emp_3.id)
     expect(orders.last.items.count).to be >= 2
   end

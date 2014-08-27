@@ -88,8 +88,9 @@ module DoubleDog
 
       def all_items
         all_items = []
-        Item.find_each do |x|
+        Item.all.each do |x|
           all_items << DoubleDog::Item.new(x.id, x.name, x.price)
+          p all_items
         end
         all_items
       end
@@ -109,11 +110,17 @@ module DoubleDog
         end
         DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)
       end
-
+# Post.where(author: author)
+# Author.joins(:posts).where(posts: { author: author })
       def get_order(id)
         ar_order = Order.find(id)
-        ar_order_items = Item.where order_id: ar_order.id
-        DoubleDog::Order.new(ar_order.id, ar_order.user_id, ar_order_items)        
+        ar_order_items = Item.joins(:orderitems).where(orders: {id: id})
+        p ar_order_items
+        items = []
+        ar_order_items.each do |x|
+          items << DoubleDog::Item.new(id, x.name, x.price)
+        end
+        DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)        
       end
 
       def all_orders
