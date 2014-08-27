@@ -93,7 +93,7 @@ shared_examples "a database" do
     retrieved_order = db.get_order(order.id)
     expect(retrieved_order).to be_a DoubleDog::Order
     expect(retrieved_order.employee_id).to eq(emp.id)
-    expect(retrieved_order.items).to include(@item_1, @item_2, @item_3)
+    expect(retrieved_order.items.map &:name).to include(@item_1.name, @item_2.name, @item_3.name)
   end
 
   it "grabs all orders" do
@@ -104,7 +104,7 @@ shared_examples "a database" do
     order_1 = db.create_order(:employee_id => emp_1.id, :items => [@item_1, @item_2, @item_3])
     order_2 = db.create_order(:employee_id => emp_2.id, :items => [@item_1, @item_3])
     order_3 = db.create_order(:employee_id => emp_3.id, :items => [@item_2, @item_3])
-    
+
     orders = db.all_orders
     expect(orders.map &:employee_id).to include(emp_1.id, emp_2.id, emp_3.id)
     expect(orders.last.items.count).to be >= 2
