@@ -97,19 +97,20 @@ module DoubleDog
       end
 
       def create_order(attrs)
-        ar_order = Order.create(user_id: attrs[:employee_id])
-        items = attrs[:items].map do |item|
-          Orderitem.create(
-            order_id: ar_order.id,
-            item_id: item.id
-          )
-          # o.order_id = ar_order.id
-          # o.item_id = i
-          # o.save
-          q = DoubleDog::Item.new(item.id, item.name, item.price)
-          # items << q
+        ar_order = Order.new
+        ar_order.user_id = attrs[:employee_id]
+        ar_order.save
+        items = []
+        attrs[:items].each do |x|
+          i = x.id
+          o = Orderitem.new
+          o.order_id = ar_order.id
+          o.item_id = i
+          o.save
+          q = DoubleDog::Item.new(i, x.name, x.price)
+          items << q
         end
-        build_order(ar_order)
+        DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)
       end
 
       def get_order(id)
@@ -119,8 +120,7 @@ module DoubleDog
         ar_order_items.each do |x|
           items << DoubleDog::Item.new(id, x.name, x.price)
         end
-        # DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)        
-        build_order(ar_order)
+        DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)        
       end
 
       def all_orders
@@ -130,12 +130,6 @@ module DoubleDog
           all_orders << y
         end
         all_orders
-      end
-
-    private
-
-      def build_order(ar_order)
-        DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)
       end
 
     end
