@@ -5,7 +5,8 @@ module DoubleDog
     class SQL
 
       class Item < ActiveRecord::Base
-        has_many :orders, through: :orderitems
+        has_many :orderitems
+        has_many :orders, :through => :orderitems
         validates_uniqueness_of :name
       end
 
@@ -15,7 +16,8 @@ module DoubleDog
       end
 
       class Order < ActiveRecord::Base
-        has_many :items, through: :orderitems
+        has_many :orderitems
+        has_many :items, :through => :orderitems
         belongs_to :user
       end
 
@@ -90,7 +92,6 @@ module DoubleDog
         all_items = []
         Item.all.each do |x|
           all_items << DoubleDog::Item.new(x.id, x.name, x.price)
-          p all_items
         end
         all_items
       end
@@ -106,16 +107,15 @@ module DoubleDog
           o.order_id = ar_order.id
           o.item_id = i
           o.save
-          items << o
+          q = DoubleDog::Item.new(i, x.name, x.price)
+          items << q
         end
         DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)
       end
-# Post.where(author: author)
-# Author.joins(:posts).where(posts: { author: author })
+
       def get_order(id)
         ar_order = Order.find(id)
-        ar_order_items = Item.joins(:orderitems).where(orders: {id: id})
-        p ar_order_items
+        ar_order_items = Item.joins(:orderitems).where(orderitems: {order_id: id})
         items = []
         ar_order_items.each do |x|
           items << DoubleDog::Item.new(id, x.name, x.price)
@@ -126,7 +126,8 @@ module DoubleDog
       def all_orders
         all_orders = []
         Order.find_each do |x|
-          all_orders << get_order(x.id)
+          y = get_order(x.id)
+          all_orders << y
         end
         all_orders
       end
