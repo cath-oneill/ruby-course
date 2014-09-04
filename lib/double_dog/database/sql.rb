@@ -105,9 +105,7 @@ module DoubleDog
           q = DoubleDog::Item.new(i.id, i.name, i.price)
           # items << q
         end
-        r = DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)
-        p r 
-        r 
+        DoubleDog::Order.new(ar_order.id, ar_order.user_id, items)
       end
 
       def get_order(id)
